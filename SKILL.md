@@ -19,7 +19,7 @@ Two parts: **(A) message recording** via patched bridge/adapter → JSONL, **(B)
 
 ### A1. Bridge — `bridge.js`
 
-Patch: `~/.hermes/hermes-agent/scripts/whatsapp-bridge/bridge.js` ~line 637
+Patch: `Hermes `scripts/whatsapp-bridge/bridge.js`` ~line 637
 
 **Before:**
 ```js
@@ -65,7 +65,7 @@ if data.get("isGroup", False):
 
 ### A4. Env
 
-Add to `~/.hermes/.env`: `WHATSAPP_REQUIRE_MENTION=true`
+Add to the Hermes environment config file:
 
 ### A5. Restart
 
@@ -156,7 +156,7 @@ cronjob(action='update', job_id='<job_id>', prompt='<normal prompt above>')
 
 User can say: "ubah MOCA PARTY ke mode roast" or "balikin hd ke normal" — agent updates the 2 cron jobs for that group.
 
-### B4. User Style
+### B5. User Style
 
 - **Casual Indonesian** — "gw", "lo", "dong", "ya", "nih", "rame bahas", "muter di", "belum jelas"
 - **Zero metadata** — no "Cronjob Response", job_id, "Catatan teknis", "To stop..."
@@ -165,7 +165,7 @@ User can say: "ubah MOCA PARTY ke mode roast" or "balikin hd ke normal" — agen
 - **Group similar chats** — merge related messages into 3-5 topic bullets under Inti Diskusi, not one bullet per message.
 - **Honest about gaps** — write "belum ada jawaban jelas" or "tidak ada solusi valid" when appropriate; never fabricate closure.
 
-### B5. Group Behavior (Anti-Ribet Rule)
+### B6. Group Behavior (Anti-Ribet Rule)
 
 When tagged in a WhatsApp group with **"apa id grup ini?"** or similar bare ID request:
 - Reply with **just the ID**: `` `120363XXXXXXX@g.us` `` — no quotes, no bold, just inline code
@@ -173,7 +173,7 @@ When tagged in a WhatsApp group with **"apa id grup ini?"** or similar bare ID r
 - Do NOT load this skill unless explicitly asked to "set summary"
 - Speed > conversation — user finds verbose group responses deeply frustrating ("kenapa responmu ribet?")
 
-### B6. Reference Format
+### B7. Reference Format
 
 See [references/user-format-reference.md](references/user-format-reference.md) for the user's canonical summary example. Match the tone, grouping style, and section structure from that reference closely.
 
@@ -193,6 +193,8 @@ See [references/user-format-reference.md](references/user-format-reference.md) f
 | Non-whitelisted member chat not recording | Verify 3 patches (A1-A3) applied + gateway restarted from external terminal. Bridge auto-restarts but Python adapter needs full `hermes gateway restart` |
 | Group name mismatch | Verify with `curl localhost:3000/chat/<id>@g.us` (see bridge-api.md) |
 | Summary too verbose / one bullet per message | Merge related chats into 3-5 topic bullets; group by theme, not sender |
+| Recording broken after gateway restart | Check `grep \"_build_message_event returned None\" gateway.log` — if present, Python patch not applied. Also verify `ls ~/.hermes/platforms/whatsapp/group_logs/` after sending test message |
+| Group name mislabeled | Use `curl localhost:3000/chat/<id>@g.us` to get real WhatsApp name; user often uses shortened names |
 
 ---
 
@@ -216,3 +218,10 @@ See [references/user-format-reference.md](references/user-format-reference.md) f
 - Nado: token saver — github.com/Fernado03/oh-my-pi-supreme-token-saver
 - mmoaa: paleo — github.com/mocasus/paleo
 ```
+
+---
+
+## Resources
+
+- **GitHub repo:** https://github.com/mocasus/whatsapp-group-summary — standalone repo with full README + installation guide
+- **Skill location:** `~/.hermes/skills/whatsapp-group-summary-bot/SKILL.md`

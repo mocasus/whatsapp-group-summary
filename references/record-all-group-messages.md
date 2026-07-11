@@ -11,7 +11,7 @@ This means only users listed in `WHATSAPP_ALLOWED_USERS` have their group messag
 
 ### 1. Patch bridge.js — skip allowlist for groups
 
-**File**: `~/.hermes/hermes-agent/scripts/whatsapp-bridge/bridge.js`
+**File**: Hermes `scripts/whatsapp-bridge/bridge.js`
 
 **Change line 637** from:
 ```js
@@ -26,7 +26,7 @@ The `!isGroup &&` prefix skips the allowlist check entirely for group messages. 
 
 ### 2. Patch whatsapp_common.py — remove allowlist check for groups
 
-**File**: `~/.hermes/hermes-agent/gateway/platforms/whatsapp_common.py`
+**File**: Hermes `gateway/platforms/whatsapp_common.py`
 
 **Remove lines 361-365** (the allowlist check block):
 ```python
@@ -45,7 +45,7 @@ Replace with a comment:
 
 ### 3. Set WHATSAPP_REQUIRE_MENTION=true
 
-In `~/.hermes/.env`, add or update:
+In the Hermes environment configuration, add or update:
 ```
 WHATSAPP_REQUIRE_MENTION=true
 ```
@@ -63,19 +63,7 @@ The bridge auto-restarts on kill (the adapter spawns it), but Python module chan
 
 ## Verification
 
-After restart, check:
-```bash
-# Count group inbound messages (should increase rapidly if groups are active)
-grep -c "inbound message.*@g.us" ~/.hermes/logs/gateway.log
-
-# Check session DB for group sessions
-python3 -c "
-import sqlite3
-db = sqlite3.connect('$HOME/.hermes/state.db')
-count = db.execute(\"SELECT COUNT(*) FROM sessions WHERE source='whatsapp' AND chat_id LIKE '%@g.us'\").fetchone()[0]
-print(f'Group sessions: {count}')
-"
-```
+After restart, check recording logs at the group_logs directory configured in the adapter.
 
 ## ⚠️ Warning: Patches are overwritten on `hermes update`
 

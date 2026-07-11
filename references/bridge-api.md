@@ -1,28 +1,27 @@
 # WhatsApp Bridge API — Quick Reference
 
+When Hermes WhatsApp gateway is running, the Baileys bridge exposes an HTTP API for querying chat/group info.
+
 ## Get group name by ID
-```bash
-curl -s http://localhost:3000/chat/120363XXXXXXXXXX@g.us | python3 -c "import sys,json; print(json.loads(sys.stdin.read()).get('name','?'))"
+
+Query the bridge chat endpoint with the group ID:
 ```
+GET /chat/<chat_id>
+```
+
+The bridge returns JSON with `name`, `isGroup`, `participants`, and other group metadata.
 
 ## Get names for all recorded groups
-```bash
-for f in ~/.hermes/platforms/whatsapp/group_logs/*.jsonl; do
-  id=$(basename "$f" .jsonl)
-  name=$(curl -s "http://localhost:3000/chat/$id" | python3 -c "import sys,json; print(json.loads(sys.stdin.read()).get('name','?'))")
-  echo "$id → $name ($(wc -l < "$f") msgs)"
-done
-```
 
-## Check recording status
-```bash
-ls ~/.hermes/platforms/whatsapp/group_logs/
-# Each file = one group being recorded
-# Format: <chat_id>.jsonl
-```
+Iterate over JSONL log files and query each group's chat endpoint to retrieve the group name.
 
 ## JSONL format
-Each line: `{"ts": 1783736100, "sender": "Nama", "body": "isi pesan"}`
+
+Each line in the log file is a JSON object:
+```json
+{"ts": 1783736100, "sender": "Display Name", "body": "message text"}
+```
+
 - `ts` = UNIX timestamp (integer, seconds)
 - `sender` = WhatsApp display name
-- `body` = message text (stickers show "[Sticker]")
+- `body` = message text (stickers show `"[Sticker]"`)
