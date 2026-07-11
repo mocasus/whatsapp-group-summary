@@ -13,6 +13,16 @@ Two parts: **(A) message recording** via patched bridge/adapter → JSONL, **(B)
 
 ⚠️ **Core patches required.** WhatsApp normally only forwards @mentioned or whitelisted-user messages. Three source files must be patched to record ALL messages silently. Patches WILL be overwritten on `hermes update` — re-apply after updates.
 
+## Quick Install
+
+```bash
+npx whatsapp-group-summary          # ⚡ auto-detect Hermes + check patches
+hermes skills install whatsapp-group-summary  # 🎯 Hermes CLI
+```
+Repo: https://github.com/mocasus/whatsapp-group-summary
+
+---
+
 ---
 
 ## Part A: Message Recording (One-Time Setup)
@@ -191,10 +201,9 @@ See [references/user-format-reference.md](references/user-format-reference.md) f
 | Cron delivery header `Cronjob Response: ...` | Only appears in origin/DM delivery; group delivery (`whatsapp:...`) is clean |
 | "Ribet" group responses | When tagged for "apa id grup", reply with just `` `120363XXXX@g.us` `` — no explanation, no skill loading |
 | Non-whitelisted member chat not recording | Verify 3 patches (A1-A3) applied + gateway restarted from external terminal. Bridge auto-restarts but Python adapter needs full `hermes gateway restart` |
-| Group name mismatch | Verify with `curl localhost:3000/chat/<id>@g.us` (see bridge-api.md) |
 | Summary too verbose / one bullet per message | Merge related chats into 3-5 topic bullets; group by theme, not sender |
-| Recording broken after gateway restart | Check `grep \"_build_message_event returned None\" gateway.log` — if present, Python patch not applied. Also verify `ls ~/.hermes/platforms/whatsapp/group_logs/` after sending test message |
-| Group name mislabeled | Use `curl localhost:3000/chat/<id>@g.us` to get real WhatsApp name; user often uses shortened names |
+| Group name mislabeled | Use `curl localhost:3000/chat/<id>@g.us` to get real WhatsApp name; user often uses shortened names. After setup, verify all group names match. |
+| Unknown group appears in logs | Query bridge API for group name (`curl localhost:3000/chat/<id>@g.us`), then ask user if they want summary. Only setup if user confirms.
 
 ---
 
@@ -224,4 +233,7 @@ See [references/user-format-reference.md](references/user-format-reference.md) f
 ## Resources
 
 - **GitHub repo:** https://github.com/mocasus/whatsapp-group-summary — standalone repo with full README + installation guide
+- **npm:** `npx whatsapp-group-summary` — one-command installer with patch detection
+- **Publishing guide:** `references/npm-publish.md` — how to publish Hermes skills to npm + Hub
+- **X/Twitter media download:** `references/x-twitter-media-download.md` — fxtwitter API workaround without auth
 - **Skill location:** `~/.hermes/skills/whatsapp-group-summary-bot/SKILL.md`
