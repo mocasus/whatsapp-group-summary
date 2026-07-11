@@ -1,12 +1,18 @@
 {
   "name": "whatsapp-group-summary",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "WhatsApp group chat summary bot for Hermes Agent — record all messages silently, auto-summarize 2x daily",
   "main": "install.js",
   "bin": {
     "whatsapp-group-summary": "./install.js"
   },
-  "keywords": ["hermes-agent", "whatsapp", "summary", "group-chat", "bot"],
+  "keywords": [
+    "hermes-agent",
+    "whatsapp",
+    "summary",
+    "group-chat",
+    "bot"
+  ],
   "author": "mocasus",
   "license": "MIT",
   "repository": {
