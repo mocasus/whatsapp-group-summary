@@ -1,5 +1,7 @@
 # WhatsApp Group Summary Bot for Hermes Agent
 
+![Logo](logo.jpg)
+
 Bot ringkasan grup WhatsApp — merekam semua chat anggota grup secara diam-diam dan mengirim ringkasan terstruktur 2x sehari (07:00 & 23:00 WIB).
 
 ## Fitur
