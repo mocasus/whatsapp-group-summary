@@ -136,13 +136,13 @@
 ### Step 1: Install Skill
 
 ```bash
-# Via npx (recommended)
-npx github:mocasus/whatsapp-group-summary
+# ⚡ npx (recommended)
+npx whatsapp-group-summary
 
-# Atau via hermes skills install
-hermes skills install https://raw.githubusercontent.com/mocasus/whatsapp-group-summary/main/SKILL.md
+# 🎯 Via Hermes CLI
+hermes skills install whatsapp-group-summary
 
-# Atau manual git clone
+# 📦 Manual git clone
 git clone https://github.com/mocasus/whatsapp-group-summary.git ~/.hermes/skills/whatsapp-group-summary-bot
 ```
 
