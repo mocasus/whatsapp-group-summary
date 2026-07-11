@@ -133,12 +133,17 @@
 
 ---
 
-### Step 1: Clone Skill
+### Step 1: Install Skill
 
 ```bash
-mkdir -p ~/.hermes/skills
-git clone https://github.com/mocasus/whatsapp-group-summary.git \
-  ~/.hermes/skills/whatsapp-group-summary-bot
+# Via npx (recommended)
+npx github:mocasus/whatsapp-group-summary
+
+# Atau via hermes skills install
+hermes skills install https://raw.githubusercontent.com/mocasus/whatsapp-group-summary/main/SKILL.md
+
+# Atau manual git clone
+git clone https://github.com/mocasus/whatsapp-group-summary.git ~/.hermes/skills/whatsapp-group-summary-bot
 ```
 
 ---
