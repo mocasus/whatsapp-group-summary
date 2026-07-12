@@ -31,26 +31,22 @@
 
 ### Mode Normal
 ```
-*Summary General — 12 jam terakhir*
-- *Inti Diskusi*
-- Ngobrolin tools AI: GPT 5.6 Sol, Codex, Claude vs ChatGPT 5 buat slicing UI
-- Sharing repo token saver: oh-my-pi dari Nado dan paleo dari mmoaa
-- Diskusi akses remote: Tailscale vs NetBird
-- Info event Lovable + temp mail smailpro buat klaim kredit
-- *Keputusan*
-- Tidak ada keputusan formal.
-- *Follow-up / Action*
-- Pen?: cek detail deploy error
-- Yanda Nooryuda: cek member/top hari ini
-- mmoaa: minta stars buat repo paleo
-- *Pertanyaan Terbuka*
+*Summary General — 12 jam terakhir ‼️*
+
+*Inti Diskusi*
+- **Tools AI & model comparison** — GPT 5.6 Sol, Codex, Claude vs ChatGPT 5. DickySusanto & Pen? paling dominan.
+- **Token saver repos** — Nado share oh-my-pi, mmoaa share paleo.
+- **Remote access debate** — Tailscale vs NetBird, belum jelas mana yg lebih bagus.
+
+*Pertanyaan*
 - API Gmaps berbayar atau gratis?
 - Sol udah masuk Codex official belum?
-- Mending Tailscale atau NetBird buat remote?
-- *Link-link*
-- Nado: oh-my-pi token saver — github.com/Fernado03/oh-my-pi-supreme-token-saver
-- mmoaa: paleo token saver — github.com/mocasus/paleo
-- 你算哪块小饼干？: bluk-cf auto CF — github.com/iAm-182/bluk-cf
+
+*Link*
+- Nado: oh-my-pi — github.com/Fernado03/oh-my-pi-supreme-token-saver
+- mmoaa: paleo — github.com/mocasus/paleo
+
+Top senders: DickySusanto (25), Pen? (18), Nado (12), mmoaa (10)
 ```
 
 ### Mode Roast 🔥
@@ -288,28 +284,34 @@ Hermes akan membalas dengan format `` `123456789@g.us` ``
 #### 6b. Buat Cron Jobs via Hermes
 
 ```
-Morning: schedule = 0 0 * * *  (07:00 WIB)
-Evening: schedule = 0 16 * * * (23:00 WIB)
+Morning: schedule = 0 8 * * *  (07:00 WIB)
+Evening: schedule = 0 0 * * * (23:00 WIB)
 Deliver: whatsapp:<chat_id>@g.us
 ```
 
+> Server timezone = Asia/Shanghai (UTC+8). WIB = UTC+7, so add 1 hour for CST.
+
 **Prompt Normal:**
 ```
-Kamu adalah bot ringkasan. HANYA OUTPUT RINGKASAN. Baca ~/.hermes/platforms/whatsapp/group_logs/<CHAT_ID>.jsonl, filter 12 jam (ts=UNIX timestamp). TANPA blank line:
+Baca ~/.hermes/platforms/whatsapp/group_logs/<CHAT_ID>.jsonl 12 jam. Output:
 
-*Summary General — 12 jam terakhir*
-- *Inti Diskusi*
-- [rangkum per topik, gabungin chat mirip]
-- *Keputusan*
-- [keputusan atau "Tidak ada keputusan formal."]
-- *Follow-up / Action*
-- [Nama]: [action]
-- *Pertanyaan Terbuka*
-- [pertanyaan]
-- *Link-link*
-- [Nama]: [desc] — [URL]
+*Summary General — 12 jam terakhir ‼️*
 
-ATURAN: No metadata, no blank line, no job info. HANYA ringkasan. Nama dari field "sender". Bahasa Indonesia santai.
+*Inti Diskusi*
+- **Topik Singkat** — deskripsi 1-2 kalimat, sebut siapa ngomong. Gabungin chat mirip.
+
+*Keputusan* (skip kalo kosong)
+- keputusan
+
+*Pertanyaan* (skip kalo kosong)
+- Nama: pertanyaan? (terjawab: ...)
+
+*Link* (skip kalo kosong)
+- Nama — URL
+
+Top senders: Nama (count), ...
+
+ATURAN: Title+headers = *italic single*. Topic titles = **bold double**. Section kosong = HAPUS TOTAL. Nama dari sender. URL lengkap. Bahasa santai. Blank line antar section OK.
 ```
 
 ---
@@ -368,11 +370,12 @@ whatsapp-group-summary/
 |--------|----------|--------|
 | `group_logs/` kosong | Patch A/B/C belum applied | Re-apply patch, restart gateway |
 | Recording jalan tapi bot tetep respon | `WHATSAPP_REQUIRE_MENTION` belum di-set | Pastikan ada di `.env`, restart gateway |
-| Cron output ada `Cronjob Response:...` | Normal — hanya muncul di DM delivery | Delivery ke grup WhatsApp langsung clean |
-| Patch hilang setelah `hermes update` | Update menimpa source | Re-apply patch A/B/C setiap update |
-| `gateway restart` diblokir | Berjalan dari dalam session Hermes | Restart dari terminal SSH terpisah |
-| Blank lines di output summary | Prompt kurang "TANPA blank line" | Update prompt — tambahkan constraint |
-| Bridge ga kirim pesan grup | `WHATSAPP_GROUP_POLICY` bukan `open` | Set `WHATSAPP_GROUP_POLICY=open` di `.env` |
+|| Cron output ada `Cronjob Response:...` | `wrap_response` belum di-set | `hermes config set cron.wrap_response false` |
+|| Patch hilang setelah `hermes update` | Update menimpa source | Re-apply patch A/B/C setiap update |
+|| `gateway restart` diblokir | Berjalan dari dalam session Hermes | Restart dari terminal SSH terpisah |
+|| Blank lines di output summary | Prompt masih format lama | Update prompt — blank lines antar section OK, dalam section NO |
+|| Bridge ga kirim pesan grup | `WHATSAPP_GROUP_POLICY` bukan `open` | Set `WHATSAPP_GROUP_POLICY=open` di `.env` |
+|| Summary verbose / error format | Prompt masih `|||` atau format lama | Update prompt ke format terbaru dari SKILL.md B3 |
 
 ---
 

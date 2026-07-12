@@ -23,8 +23,6 @@ Repo: https://github.com/mocasus/whatsapp-group-summary
 
 ---
 
----
-
 ## Part A: Message Recording (One-Time Setup)
 
 ### A1. Bridge — `bridge.js`
@@ -101,32 +99,37 @@ See `references/verify-recording.md` for full checklist.
 
 ### B2. Create Jobs
 
-| Job | Cron (UTC) | WIB |
+| Job | Cron (CST) | WIB |
 |-----|-----------|-----|
-| Morning | `0 0 * * *` | 07:00 |
-| Evening | `0 16 * * *` | 23:00 |
+| Morning | `0 8 * * *` | 07:00 |
+| Evening | `0 0 * * *` | 23:00 |
 
-Deliver to `whatsapp:<chat_id>@g.us` **immediately** — never use `origin` as placeholder.
+Server timezone = Asia/Shanghai (UTC+8). WIB = UTC+7, so add 1 hour for CST.
+**Always pass `schedule` param** on update — omitting it resets to `0 0 * * *`.
 
 ### B3. Cron Prompt
 
 **Normal mode (default):**
 ```
-Kamu adalah bot ringkasan. HANYA OUTPUT RINGKASAN. Baca ~/.hermes/platforms/whatsapp/group_logs/<CHAT_ID>.jsonl, filter 12 jam (ts=UNIX timestamp integer). TANPA blank line:
+Baca ~/.hermes/platforms/whatsapp/group_logs/<CHAT_ID>.jsonl 12 jam. Output:
 
-*Summary General — 12 jam terakhir*
-- *Inti Diskusi*
-- [rangkum per topik, gabungin chat mirip]
-- *Keputusan*
-- [keputusan atau "Tidak ada keputusan formal."]
-- *Follow-up / Action*
-- [Nama]: [action]
-- *Pertanyaan Terbuka*
-- [pertanyaan]
-- *Link-link*
-- [Nama]: [desc] — [URL]
+*Summary General — 12 jam terakhir ‼️*
 
-ATURAN: No metadata, no blank line, no job info. HANYA ringkasan. Nama dari field "sender". Bahasa Indonesia santai.
+*Inti Diskusi*
+- **Topik Singkat** — deskripsi 1-2 kalimat, sebut siapa ngomong. Gabungin chat mirip.
+
+*Keputusan* (skip kalo kosong)
+- keputusan
+
+*Pertanyaan* (skip kalo kosong)
+- Nama: pertanyaan? (terjawab: ...)
+
+*Link* (skip kalo kosong)
+- Nama — URL
+
+Top senders: Nama (count), ...
+
+ATURAN: Title+headers = *italic single*. Topic titles = **bold double**. Section kosong = HAPUS TOTAL, jangan tulis "Tidak ada...". Nama dari sender. URL lengkap. Bahasa santai. Blank line antar section OK.
 ```
 
 **Roast mode (🔥 毒舌):**
@@ -215,22 +218,22 @@ See [references/user-format-reference.md](references/user-format-reference.md) f
 ## Example Output
 
 ```
-*Summary General — 12 jam terakhir*
-- *Inti Diskusi*
-- Ngobrolin tools AI: GPT 5.6 Sol, Codex, Claude vs ChatGPT 5
-- Sharing repo token saver: oh-my-pi dan paleo
-- Diskusi akses remote: Tailscale vs NetBird
-- *Keputusan*
-- Tidak ada keputusan formal.
-- *Follow-up / Action*
-- Pen?: cek detail deploy error
-- Yanda Nooryuda: cek member/top hari ini
-- *Pertanyaan Terbuka*
+*Summary General — 12 jam terakhir ‼️*
+
+*Inti Diskusi*
+- **Tools AI & model comparison** — GPT 5.6 Sol, Codex, Claude vs ChatGPT 5 buat slicing UI. DickySusanto dan Pen? dominan.
+- **Token saver repos** — Nado share oh-my-pi-supreme-token-saver, mmoaa share paleo.
+- **Remote access debate** — Tailscale vs NetBird, belum ada kesimpulan jelas.
+
+*Pertanyaan*
 - API Gmaps berbayar atau gratis?
-- Sol udah masuk Codex official?
-- *Link-link*
+- Sol udah masuk Codex official atau masih lewat 9router?
+
+*Link*
 - Nado: token saver — github.com/Fernado03/oh-my-pi-supreme-token-saver
 - mmoaa: paleo — github.com/mocasus/paleo
+
+Top senders: DickySusanto (25), Pen? (18), Nado (12), mmoaa (10)
 ```
 
 ---
