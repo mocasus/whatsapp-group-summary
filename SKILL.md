@@ -1,6 +1,6 @@
 ---
 name: whatsapp-group-summary-bot
-description: Setup WhatsApp group summary bot — records all messages silently via patched bridge+adapter, reads from JSONL logs, sends structured twice-daily summaries (07:00 & 23:00 WIB) in clean WhatsApp-friendly format (no metadata, no blank lines, casual Indonesian).
+description: Setup WhatsApp group summary bot — records all messages silently via patched bridge+adapter, reads from JSONL logs, sends structured twice-daily summaries (07:00 & 23:00 WIB) in clean format (italic headers, bold topics, skip empty sections, casual Indonesian).
 triggers:
   - User wants auto-summary or "ringkasan" for WhatsApp group
   - User shares WhatsApp group invite link with summary request
@@ -170,9 +170,14 @@ User can say: "ubah MOCA PARTY ke mode roast" or "balikin hd ke normal" — agen
 
 - **Casual Indonesian** — "gw", "lo", "dong", "ya", "nih", "rame bahas", "muter di", "belum jelas"
 - **Zero metadata** — no "Cronjob Response", job_id, "Catatan teknis", "To stop..."
-- **No blank lines** between sections — WhatsApp renders double newlines as ugly gaps. This is the #1 format bug the user catches. Every line in the summary MUST be a consecutive dash-prefix line with ZERO blank separators anywhere.
-- **Direct & short** — user hates verbosity ("ribet"). Never add explanatory notes, setup context, or disclaimers to the summary.
+- **Blank lines BETWEEN sections** OK — WhatsApp renders section separation cleanly. No blank lines WITHIN a section.
+- **Section headers: `*italic*`** (single asterisk) — `*Inti Diskusi*`, `*Keputusan*`, `*Pertanyaan*`, `*Link*`
+- **Topic titles: `**bold**`** (double asterisk) — `- **Topik Singkat** — deskripsi 1-2 kalimat`
+- **Empty sections = DELETE entirely** — never write "Tidak ada keputusan formal." Just skip the section.
+- **Direct & short** — user hates verbosity ("ribet"). Never add explanatory notes, setup context, or disclaimers.
 - **Group similar chats** — merge related messages into 3-5 topic bullets under Inti Diskusi, not one bullet per message.
+- **Top senders at the end** — `Top senders: Nama (count), ...`
+- Set `cron.wrap_response: false` in config.yaml to strip Hermes cron delivery headers/footers (`hermes config set cron.wrap_response false`).
 - **Honest about gaps** — write "belum ada jawaban jelas" or "tidak ada solusi valid" when appropriate; never fabricate closure.
 
 ### B6. Group Behavior (Anti-Ribet Rule)
@@ -197,8 +202,8 @@ See [references/user-format-reference.md](references/user-format-reference.md) f
 | Gateway restart from inside blocked | Use external SSH terminal |
 | Bridge auto-restarts, Python doesn't | Full `hermes gateway restart` needed for Python changes |
 | JSONL timestamps are UNIX epoch ints | Don't try ISO parsing; compare integer timestamps |
-| Blank lines in output | "TANPA blank line" in prompt is critical |
-| Cron delivery header `Cronjob Response: ...` | Only appears in origin/DM delivery; group delivery (`whatsapp:...`) is clean |
+|| Blank lines in output | Blank lines BETWEEN sections now OK. Use section headers as natural separators. NO blank lines within a section. |
+|| Cron delivery header `Cronjob Response: ...` | Set `cron.wrap_response: false` via `hermes config set cron.wrap_response false`. Applies to ALL cron deliveries. |
 | "Ribet" group responses | When tagged for "apa id grup", reply with just `` `120363XXXX@g.us` `` — no explanation, no skill loading |
 | Non-whitelisted member chat not recording | Verify 3 patches (A1-A3) applied + gateway restarted from external terminal. Bridge auto-restarts but Python adapter needs full `hermes gateway restart` |
 | Summary too verbose / one bullet per message | Merge related chats into 3-5 topic bullets; group by theme, not sender |

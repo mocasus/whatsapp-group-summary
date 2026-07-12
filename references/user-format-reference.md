@@ -1,41 +1,44 @@
 # User's Reference Format
 
-This is the exact format the user provided as a reference for how summaries should look.
-Use this as the canonical example — match the style, tone, and structure closely.
+This is the canonical format for WhatsApp group summaries. Match the style, tone, and structure closely.
 
 ```
-*Summary General — 12 jam terakhir*
-- *Inti Diskusi*
-- Grup rame bahas perbandingan model/agent: GPT 5.6 Sol/Terra/Luna, Grok, Opus, Qwen, plus setup Codex/9router. Pen? dan DickySusanto paling dominan arahkan diskusi.
-- Banyak tanya soal akses & workflow: apakah Sol sudah masuk Codex official, beda mode sol vs sol-xhigh, serta model mana yang enak buat coding, summary, security, atau daily usage.
-- Obrolan teknis lain muter di tokenizer/LLM from scratch, rate limit 429, remote access via Tailscale/SSH/RDP, dan integrasi Agentrouter/9router.
-- Ada juga share metode/event/trial tools, tapi banyak yang sifatnya coba-coba komunitas dan belum jelas stabilitasnya.
-- *Keputusan*
-- Tidak ada keputusan formal.
-- *Follow-up / Action*
-- Pen?: sempat bilang "besok aja besok" buat lanjut share/tutor yang diminta.
-- Pen?: update singkat "deploy error done", tapi belum ada detail hasil lanjutannya.
-- Yanda Nooryuda: ada task open buat cek member/top hari ini.
-- DickySusanto / 你算哪块小饼干？: masih ada request open buat kirim benchmark kecil/model arena dan extension RF token.
-- *Pertanyaan Terbuka*
-- API Gmaps ternyata berbayar atau tidak?
-- Bagusan Tailscale atau NetBird untuk akses remote?
-- Sol sekarang bisa dipakai langsung di Codex CLI atau tetap harus lewat 9router?
-- Untuk slicing UI, lebih cocok Claude atau ChatGPT versi terbaru?
-- *Link-link*
-- Nado: share repo token saver di GitHub — github.com/Fernado03/oh-my-pi-supreme-token-saver
-- Bayu Anugerah: share extension codex-auth di Chrome Web Store.
-- Yanda Nooryuda / Azhar: share ulang link invite grup WhatsApp.
-- Mzxn Amnah: share event/community Lovable + temp mail smailpro buat klaim credit.
-- gn: share repo Vandivier/ladderly-3 terkait issue/ref lain.
+*Summary General — 12 jam terakhir ‼️*
+
+*Inti Diskusi*
+- **Kiro model Opus & Sonnet ilang** — User yang login via SSO/AWS kehilangan model Opus. Login via Azure, Kiro startup, dan Kiro power masih aman. Spekulasi: Anthropic ban API access dari region tertentu. Workaround: coba VPN US. Gozali share issue terkait.
+- **Marketku banjir restock & produk baru** — Kiro Garansi 7 hari (85k), AI Router Opus 4.8/Sonnet 5/GPT-5.6, Telegram akun siap pakai (5k), ChatGPT K12 EDU sale 35% (16k), plus restock rutin GLM 5.2, Deepseek v4 Pro.
+- **Deny update** — Rilis kimi-k2.7-code-highspeed (1.5x), semua user otomatis dapat. 9Router fixed.
+- **OpenAI hapus pembayaran pihak ketiga** — PayPal, UPI, BLIK, GOPAY udah ga bisa buat beli OpenAI. Marketku buka layanan purna jual.
+
+*Pertanyaan*
+- Pras: mas yoga kapan restock apinya?
+- Fahmi dwi: cari api router sonnet 4.6 yang murce
+- Fajar Cloud: pasaran berapa sekarang? → Dwipa: kiro nguyen 120k
+- Mukhlis: QRIS marketku ada potongan? → Marketku.id: ga ada
+
+*Link*
+- Gozali: Kiro issue #9331 — https://github.com/kirodotdev/Kiro/issues/9331
+- .: Anthropic supported countries — https://www.anthropic.com/supported-countries
+
+Top senders: Marketku.id (30), . (21), Deny (6), Dwipa (5), Fajar Cloud (4)
 ```
 
-## Key formatting rules extracted:
+## Key formatting rules:
 
-1. **No blank lines** between sections — WhatsApp renders these as ugly gaps
-2. **Dash-prefix for everything** — `- *Section Name*` then `- content`
-3. **Group related chats into 3-5 topic bullets** under Inti Diskusi
-4. **Names**: use the WhatsApp display name, not phone number
-5. **Casual Indonesian**: "rame bahas", "muter di", "belum jelas"
-6. **Links at the bottom**: sender name, description, URL
-7. **Honest about uncertainty**: "belum ada jawaban jelas", "tidak ada solusi valid"
+1. **Title**: `*Summary General — 12 jam terakhir ‼️*` (italic, with ‼️ emoji)
+2. **Section headers**: `*italic*` single asterisk — `*Inti Diskusi*`, `*Keputusan*`, `*Pertanyaan*`, `*Link*`
+3. **Topic titles**: `**bold**` double asterisk — `- **Title** — description with names`
+4. **Blank lines BETWEEN sections OK** — no blank lines within a section
+5. **Empty sections = DELETE entirely** — never write "Tidak ada keputusan formal."
+6. **Top senders at the end** — `Top senders: Nama (count), ...`
+7. **Names**: WhatsApp display name from `sender` field
+8. **Casual Indonesian**: "rame bahas", "muter di", "belum jelas"
+9. **Links**: sender name, description, full URL
+10. **Config**: `cron.wrap_response: false` strips Hermes cron delivery headers
+
+## Schedule
+
+Server timezone = Asia/Shanghai (UTC+8), so WIB = UTC+7:
+- Morning 07:00 WIB → `0 8 * * *`
+- Evening 23:00 WIB → `0 0 * * *`

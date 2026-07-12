@@ -76,6 +76,16 @@
 
 ---
 
+## ⚙️ Konfigurasi
+
+```bash
+hermes config set cron.wrap_response false
+```
+
+**Penting!** Tanpa ini, setiap summary ada header `Cronjob Response: ...` dan footer `To stop or manage this job...`. Setting ini menghapus semua metadata — output murni ringkasan bersih.
+
+---
+
 ## 🏗️ Arsitektur
 
 ```
