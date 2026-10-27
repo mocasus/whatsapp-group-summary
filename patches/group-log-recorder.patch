@@ -1,0 +1,66 @@
+# Optional JSONL group-message recorder for bridge.js
+#
+# Appends every group message to
+#   $HERMES_HOME/platforms/whatsapp/group_logs/<group-id>.jsonl
+#
+# bridge.js is an ES module, so require('fs') inside the handler throws and
+# a bare catch swallows it -> no log file, no error. This patch uses
+# top-level ESM imports and a catch that reports the failure.
+#
+# Apply from the Hermes install root (or from $HERMES_HOME when the bridge
+# is overridden there):
+#   git apply patches/group-log-recorder.patch
+#   patch -p1 < patches/group-log-recorder.patch
+# Then install bridge dependencies and restart the gateway from an external
+# terminal. See references/group-log-recorder.md.
+#
+--- a/scripts/whatsapp-bridge/bridge.js
++++ b/scripts/whatsapp-bridge/bridge.js
+@@ -24,11 +24,11 @@
+ import { Boom } from '@hapi/boom';
+ import pino from 'pino';
+ import path from 'path';
+-import { mkdirSync, readFileSync, existsSync, readdirSync, unlinkSync } from 'fs';
++import { mkdirSync, readFileSync, existsSync, readdirSync, unlinkSync, appendFileSync } from 'fs';
+ import { fileURLToPath } from 'url';
+ import { randomBytes, createHash } from 'crypto';
+ import { execFileSync } from 'child_process';
+-import { tmpdir } from 'os';
++import { tmpdir, homedir } from 'os';
+ import qrcode from 'qrcode-terminal';
+ import { matchesAllowedSender, matchesAllowedUser, matchesInboundWhatsAppGroup, parseAllowedUsers } from './allowlist.js';
+ import { createOutboundIdTracker } from './outbound_ids.js';
+@@ -768,6 +768,33 @@
+         continue;
+       }
+ 
++      // PATCHED: Record all group messages to JSONL for cron summary.
++      // NOTE: bridge.js is an ES module, so CommonJS `require()` is undefined here.
++      // The old code called require('fs')/require('path')/require('os'), threw
++      // ReferenceError on every group message, and the catch below swallowed it —
++      // so no group_logs file was ever written. Use the top-level ESM imports.
++      if (isGroup && event.body && event.body.trim()) {
++        try {
++          const logDir = process.env.GROUP_LOG_DIR
++            || path.join(process.env.HERMES_HOME || homedir(), 'platforms', 'whatsapp', 'group_logs');
++          mkdirSync(logDir, { recursive: true });
++          const logFile = path.join(logDir, chatId + '.jsonl');
++          const entry = {
++            ts: Number(msg.key.timestamp) || Math.floor(Date.now() / 1000),
++            sender: event.senderName || senderId || '',
++            body: event.body.trim(),
++          };
++          appendFileSync(logFile, JSON.stringify(entry) + '\n');
++        } catch (err) {
++          // Never block message processing on logging failure — but do surface the
++          // first few failures instead of failing silently forever.
++          globalThis.__groupLogFailures = (globalThis.__groupLogFailures || 0) + 1;
++          if (globalThis.__groupLogFailures <= 3) {
++            console.error('[group-log] write failed:', (err && err.message) || err);
++          }
++        }
++      }
++
+       messageStore.remember(msg);
+       // Remember this message's already-downloaded media/text so a later
+       // reply to it (even uncaptioned media) can resolve the original
